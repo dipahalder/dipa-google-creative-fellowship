@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dipa Halder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --warm: #C4956A;
+      --warm-light: #E8D5B7;
+      --cold-dark: #0f1923;
+      --cold-light: #8fa3b1;
+      --cream: #F5EFE6;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      overflow: hidden;
+      height: 100vh;
+      cursor: none;
+    }
+
+    /* Cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--warm);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+    .cursor.large { width: 32px; height: 32px; }
+
+    /* =====================
+       SPLIT HERO
+    ===================== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 3.5rem 4rem;
+      overflow: hidden;
+      transition: flex 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .side.left {
+      background: var(--cold-dark);
+      color: var(--cold-light);
+      flex: 1;
+    }
+
+    .side.right {
+      background: radial-gradient(ellipse at 60% 30%, #2e1a1a 0%, #1a0f0f 45%, #110a0a 100%);
+      color: var(--cream);
+      flex: 1;
+    }
+
+    /* Hover expand */
+    .hero:hover .side.left { flex: 0.55; }
+    .hero:hover .side.right { flex: 1.45; }
+    .side.left:hover ~ .side.right { flex: 0.55 !important; }
+    .side.left:hover { flex: 1.45 !important; }
+
+    /* Grid texture */
+    .side.left::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(143,163,177,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(143,163,177,0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+    }
+
+    /* Scan line */
+    .side.left::after {
+      content: '';
+      position: absolute; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(143,163,177,0.1), transparent);
+      animation: scan 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scan {
+      0% { top: 0; } 100% { top: 100%; }
+    }
+
+    /* Watercolor blobs */
+    .watercolor {
+      position: absolute; inset: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .watercolor svg { width: 100%; height: 100%; }
+
+    /* Side label */
+    .side-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      position: relative; z-index: 1;
+    }
+
+    /* Tags */
+    .side-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-top: 2rem;
+      position: relative; z-index: 1;
+    }
+
+    .side-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      opacity: 0.3;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .side-tag::before {
+      content: '';
+      width: 16px; height: 1px;
+      background: currentColor;
+      opacity: 0.5;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* Blink */
+    .blink {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.2rem;
+      color: rgba(143,163,177,0.3);
+      animation: blink 1.2s step-end infinite;
+      position: absolute;
+      bottom: 14rem;
+      left: 4rem;
+      z-index: 1;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; } 50% { opacity: 0; }
+    }
+
+    /* Center divider */
+    .center-bar {
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      transform: translateX(-50%);
+      width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.12) 70%, transparent 100%);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Bottom overlay — name + podcast */
+    .bottom-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 20;
+      padding: 2rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .footer-line {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    /* Center block — name + podcast */
+    .center-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .center-overlay .podcast-bar {
+      pointer-events: all;
+    }
+
+    .name-block h1 {
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.92);
+      line-height: 1;
+    }
+
+    .name-block .tagline {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.6rem;
+    }
+
+    /* Podcast pill */
+    .podcast-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      padding: 0.8rem 1.4rem;
+      width: fit-content;
+      text-decoration: none;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .podcast-bar:hover {
+      background: rgba(196,149,106,0.2);
+      border-color: rgba(196,149,106,0.4);
+    }
+
+    .play-btn {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--warm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 5px 0 5px 9px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 2px;
+    }
+
+    .podcast-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .podcast-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .podcast-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm);
+      opacity: 0.8;
+    }
+
+    /* Waveform */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 24px;
+      margin-left: auto;
+    }
+
+    .wave-bar {
+      width: 2px;
+      background: var(--warm);
+      border-radius: 1px;
+      opacity: 0.4;
+      animation: wave 1.8s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+
+    .wave-bar:nth-child(1){animation-delay:0s;height:40%}
+    .wave-bar:nth-child(2){animation-delay:.1s;height:70%}
+    .wave-bar:nth-child(3){animation-delay:.2s;height:50%}
+    .wave-bar:nth-child(4){animation-delay:.05s;height:90%}
+    .wave-bar:nth-child(5){animation-delay:.15s;height:35%}
+    .wave-bar:nth-child(6){animation-delay:.25s;height:65%}
+    .wave-bar:nth-child(7){animation-delay:.3s;height:80%}
+    .wave-bar:nth-child(8){animation-delay:.08s;height:45%}
+    .wave-bar:nth-child(9){animation-delay:.18s;height:60%}
+    .wave-bar:nth-child(10){animation-delay:.22s;height:75%}
+    .wave-bar:nth-child(11){animation-delay:.12s;height:40%}
+    .wave-bar:nth-child(12){animation-delay:.28s;height:85%}
+
+    /* =====================
+       FOOTER
+    ===================== */
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: none; /* hidden — bottom-overlay handles bottom */
+    }
+
+    /* Actually let's put a tiny footer inside bottom overlay */
+    .footer-line {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+
+    .footer-line span { color: var(--warm); opacity: 0.6; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+      .side { padding: 2.5rem; min-height: 50vh; }
+      .blink { bottom: auto; top: 8rem; }
+      .center-bar { display: none; }
+      .bottom-overlay { padding: 2rem; }
+      .name-block h1 { font-size: 2.2rem; }
+      .podcast-bar { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <div class="hero">
+
+    <div class="center-bar"></div>
+
+    <!-- LEFT: Engineer -->
+    <div class="side left">
+      <div class="side-label">// the engineer</div>
+      <div class="side-tags">
+        <div class="side-tag">computer science</div>
+        <div class="side-tag">product engineer</div>
+        <div class="side-tag">figma</div>
+        <div class="side-tag">systems thinking</div>
+      </div>
+      <span class="blink">_</span>
+    </div>
+
+    <!-- RIGHT: Artist -->
+    <div class="side right">
+      <div class="watercolor">
+        <svg viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <filter id="b1"><feGaussianBlur stdDeviation="35"/></filter>
+            <filter id="b2"><feGaussianBlur stdDeviation="25"/></filter>
+            <filter id="b3"><feGaussianBlur stdDeviation="50"/></filter>
+          </defs>
+          <ellipse cx="380" cy="120" rx="180" ry="150" fill="rgba(196,149,106,0.55)" filter="url(#b3)" transform="rotate(-15 380 120)"/>
+          <ellipse cx="420" cy="320" rx="140" ry="110" fill="rgba(155,85,55,0.45)" filter="url(#b1)" transform="rotate(10 420 320)"/>
+          <ellipse cx="280" cy="220" rx="120" ry="95" fill="rgba(232,200,160,0.5)" filter="url(#b2)" transform="rotate(-5 280 220)"/>
+          <ellipse cx="60" cy="580" rx="160" ry="110" fill="rgba(196,149,106,0.35)" filter="url(#b3)" transform="rotate(20 60 580)"/>
+          <ellipse cx="150" cy="60" rx="100" ry="75" fill="rgba(220,165,115,0.4)" filter="url(#b2)" transform="rotate(-30 150 60)"/>
+          <ellipse cx="450" cy="550" rx="120" ry="90" fill="rgba(180,110,70,0.3)" filter="url(#b1)" transform="rotate(15 450 550)"/>
+        </svg>
+      </div>
+      <div class="side-label" style="color:rgba(245,239,230,0.4);position:relative;z-index:1">~ the artist</div>
+      <div class="side-tags" style="position:relative;z-index:1">
+        <div class="side-tag" style="color:rgba(245,239,230,0.5)">painter</div>
+        <div class="side-tag" style="color:rgba(245,239,230,0.5)">muralist</div>
+        <div class="side-tag" style="color:rgba(245,239,230,0.5)">florist</div>
+        <div class="side-tag" style="color:rgba(245,239,230,0.5)">interior designer</div>
+      </div>
+    </div>
+
+    <!-- CENTER OVERLAY — name + podcast -->
+    <div class="center-overlay">
+      <div class="name-block">
+        <h1>Dipa Halder</h1>
+        <p class="tagline">Engineer &nbsp;·&nbsp; Artist &nbsp;·&nbsp; World Builder</p>
+      </div>
+      <a class="podcast-bar" href="https://notebooklm.google.com/notebook/63eda02e-055b-4da1-8ec2-fddab1a4d45d?artifactId=19e54e4a-201f-452e-bff8-a562db814c8a" target="_blank">
+        <div class="play-btn"></div>
+        <div class="podcast-info">
+          <span class="podcast-title">Dipa Halder: A Creative Portrait</span>
+          <span class="podcast-sub">NotebookLM · Generated from personal essays</span>
+        </div>
+        <div class="waveform">
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        </div>
+      </a>
+    </div>
+
+    <!-- BOTTOM FOOTER -->
+    <div class="bottom-overlay">
+      <div class="footer-line">
+        <span>dipahalder.com</span>
+        <span>Made with <span>ImageFX + NotebookLM</span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('.podcast-bar').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('large'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
+    });
+  </script>
+
+</body>
+</html>
