@@ -10,8 +10,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --warm: #C4956A;
-      --warm-light: #E8D5B7;
+      --warm: #e05070;
+      --warm-light: #f0a0b0;
       --cold-dark: #0f1923;
       --cold-light: #8fa3b1;
       --cream: #F5EFE6;
@@ -66,8 +66,17 @@
     }
 
     .side.right {
-      background: radial-gradient(ellipse at 60% 30%, #2e1a1a 0%, #1a0f0f 45%, #110a0a 100%);
-      color: var(--cream);
+      background:
+        radial-gradient(ellipse at 85% 5%, #8c6d85 0%, transparent 40%),
+        radial-gradient(ellipse at 15% 15%, #7d7391 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 30%, #a3818e 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 50%, #944255 0%, transparent 35%),
+        radial-gradient(ellipse at 10% 60%, #6d7d95 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 70%, #a88d97 0%, transparent 45%),
+        radial-gradient(ellipse at 30% 90%, #8a6d7d 0%, transparent 40%),
+        radial-gradient(ellipse at 75% 85%, #a27a85 0%, transparent 35%),
+        #957088;
+      color: var(--ink);
       flex: 1;
     }
 
@@ -138,24 +147,18 @@
     }
 
     .side-tag::before {
-      content: '';
-      width: 16px; height: 1px;
-      background: currentColor;
-      opacity: 0.5;
-      display: block;
-      flex-shrink: 0;
+      display: none;
     }
 
     /* Blink */
     .blink {
       font-family: 'DM Mono', monospace;
       font-size: 1.2rem;
-      color: rgba(143,163,177,0.3);
+      color: rgba(143,163,177,0.35);
       animation: blink 1.2s step-end infinite;
-      position: absolute;
-      bottom: 14rem;
-      left: 4rem;
+      position: relative;
       z-index: 1;
+      margin-bottom: 2rem;
     }
 
     @keyframes blink {
@@ -220,8 +223,9 @@
       font-size: clamp(2.8rem, 5vw, 5rem);
       font-weight: 300;
       letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.92);
+      color: white;
       line-height: 1;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
     }
 
     .name-block .tagline {
@@ -229,8 +233,9 @@
       font-size: 0.6rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.6);
       margin-top: 0.6rem;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.3);
     }
 
     /* Podcast pill */
@@ -238,9 +243,9 @@
       display: inline-flex;
       align-items: center;
       gap: 1rem;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
+      background: rgba(20, 10, 25, 0.75);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(16px);
       padding: 0.8rem 1.4rem;
       width: fit-content;
       text-decoration: none;
@@ -249,8 +254,8 @@
     }
 
     .podcast-bar:hover {
-      background: rgba(196,149,106,0.2);
-      border-color: rgba(196,149,106,0.4);
+      background: rgba(20, 10, 25, 0.9);
+      border-color: rgba(255,255,255,0.25);
     }
 
     .play-btn {
@@ -342,13 +347,52 @@
       font-size: 0.52rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.15);
+      color: var(--warm);
       display: flex;
       justify-content: space-between;
       margin-top: 0.5rem;
     }
 
-    .footer-line span { color: var(--warm); opacity: 0.6; }
+    .footer-line .footer-right { color: rgba(15, 25, 35, 0.6); }
+
+    /* Animated doodle flower */
+    .squiggle {
+      position: absolute;
+      top: 3rem;
+      right: 3.5rem;
+      width: 36px;
+      height: 36px;
+      z-index: 1;
+      pointer-events: none;
+      animation: floatFlower 6s ease-in-out infinite;
+    }
+
+    .squiggle svg { width: 100%; height: 100%; }
+
+    .p1,.p2,.p3,.p4,.p5 { stroke-dasharray: 40; stroke-dashoffset: 40; }
+    .p6 { stroke-dasharray: 25; stroke-dashoffset: 25; }
+
+    .p1 { animation: drawLoop 3s ease 0s infinite; }
+    .p2 { animation: drawLoop 3s ease 0.25s infinite; }
+    .p3 { animation: drawLoop 3s ease 0.5s infinite; }
+    .p4 { animation: drawLoop 3s ease 0.75s infinite; }
+    .p5 { animation: drawLoop 3s ease 1s infinite; }
+    .p6 { animation: drawLoop 3s ease 1.25s infinite; }
+
+    @keyframes drawLoop {
+      0%   { stroke-dashoffset: 40; opacity: 0; }
+      10%  { opacity: 1; }
+      40%  { stroke-dashoffset: 0; opacity: 1; }
+      70%  { stroke-dashoffset: 0; opacity: 1; }
+      90%  { opacity: 0; }
+      100% { stroke-dashoffset: 40; opacity: 0; }
+    }
+
+    @keyframes floatFlower {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-6px) rotate(3deg); }
+      66% { transform: translateY(3px) rotate(-2deg); }
+    }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -372,39 +416,30 @@
 
     <!-- LEFT: Engineer -->
     <div class="side left">
-      <div class="side-label">// the engineer</div>
-      <div class="side-tags">
-        <div class="side-tag">computer science</div>
-        <div class="side-tag">product engineer</div>
-        <div class="side-tag">figma</div>
-        <div class="side-tag">systems thinking</div>
+      <div style="position:relative;z-index:1">
+        <span class="blink">_</span>
       </div>
-      <span class="blink">_</span>
     </div>
 
     <!-- RIGHT: Artist -->
     <div class="side right">
-      <div class="watercolor">
-        <svg viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <filter id="b1"><feGaussianBlur stdDeviation="35"/></filter>
-            <filter id="b2"><feGaussianBlur stdDeviation="25"/></filter>
-            <filter id="b3"><feGaussianBlur stdDeviation="50"/></filter>
-          </defs>
-          <ellipse cx="380" cy="120" rx="180" ry="150" fill="rgba(196,149,106,0.55)" filter="url(#b3)" transform="rotate(-15 380 120)"/>
-          <ellipse cx="420" cy="320" rx="140" ry="110" fill="rgba(155,85,55,0.45)" filter="url(#b1)" transform="rotate(10 420 320)"/>
-          <ellipse cx="280" cy="220" rx="120" ry="95" fill="rgba(232,200,160,0.5)" filter="url(#b2)" transform="rotate(-5 280 220)"/>
-          <ellipse cx="60" cy="580" rx="160" ry="110" fill="rgba(196,149,106,0.35)" filter="url(#b3)" transform="rotate(20 60 580)"/>
-          <ellipse cx="150" cy="60" rx="100" ry="75" fill="rgba(220,165,115,0.4)" filter="url(#b2)" transform="rotate(-30 150 60)"/>
-          <ellipse cx="450" cy="550" rx="120" ry="90" fill="rgba(180,110,70,0.3)" filter="url(#b1)" transform="rotate(15 450 550)"/>
+
+      <div class="squiggle">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <!-- 5 petals evenly spaced, pointing outward from center -->
+          <!-- Top petal (90deg) -->
+          <path class="p1" d="M30,28 C28,22 26,15 30,10 C34,15 32,22 30,28" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Top-right petal (18deg) -->
+          <path class="p2" d="M31,29 C37,25 43,20 48,23 C46,29 39,30 31,29" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Bottom-right petal (306deg) -->
+          <path class="p3" d="M31,31 C36,36 39,43 36,47 C31,45 29,38 31,31" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Bottom-left petal (234deg) -->
+          <path class="p4" d="M29,31 C24,36 18,40 14,37 C15,31 22,29 29,31" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Top-left petal (162deg) -->
+          <path class="p5" d="M29,29 C23,25 17,21 16,16 C21,14 27,19 29,29" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Center -->
+          <circle class="p6" cx="30" cy="30" r="3.5" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1.3"/>
         </svg>
-      </div>
-      <div class="side-label" style="color:rgba(245,239,230,0.4);position:relative;z-index:1">~ the artist</div>
-      <div class="side-tags" style="position:relative;z-index:1">
-        <div class="side-tag" style="color:rgba(245,239,230,0.5)">painter</div>
-        <div class="side-tag" style="color:rgba(245,239,230,0.5)">muralist</div>
-        <div class="side-tag" style="color:rgba(245,239,230,0.5)">florist</div>
-        <div class="side-tag" style="color:rgba(245,239,230,0.5)">interior designer</div>
       </div>
     </div>
 
@@ -434,7 +469,7 @@
     <div class="bottom-overlay">
       <div class="footer-line">
         <span>dipahalder.com</span>
-        <span>Made with <span>ImageFX + NotebookLM</span></span>
+        <span class="footer-right">Made with ImageFX + NotebookLM</span>
       </div>
     </div>
 
