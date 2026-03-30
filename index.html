@@ -414,19 +414,20 @@
         <h1>Dipa Halder</h1>
         <p class="tagline">Engineer &nbsp;·&nbsp; Artist &nbsp;·&nbsp; World Builder</p>
       </div>
-      <a class="podcast-bar" href="https://notebooklm.google.com/notebook/63eda02e-055b-4da1-8ec2-fddab1a4d45d?artifactId=19e54e4a-201f-452e-bff8-a562db814c8a" target="_blank">
-        <div class="play-btn"></div>
+      <div class="podcast-bar" onclick="toggleAudio()" style="cursor:pointer">
+        <audio id="audio" src="Leaving-a-perfect-corporate-life.mp3"></audio>
+        <div class="play-btn" id="play-btn"></div>
         <div class="podcast-info">
           <span class="podcast-title">Dipa Halder: A Creative Portrait</span>
           <span class="podcast-sub">NotebookLM · Generated from personal essays</span>
         </div>
-        <div class="waveform">
+        <div class="waveform" id="waveform">
           <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
           <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
           <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
           <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
         </div>
-      </a>
+      </div>
     </div>
 
     <!-- BOTTOM FOOTER -->
@@ -449,6 +450,25 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('large'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
     });
+
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('play-btn');
+    const waveform = document.getElementById('waveform');
+
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+        // Pause icon
+        playBtn.style.background = 'var(--warm)';
+        playBtn.innerHTML = '<div style="display:flex;gap:3px;align-items:center"><div style="width:3px;height:10px;background:white;border-radius:1px"></div><div style="width:3px;height:10px;background:white;border-radius:1px"></div></div>';
+        waveform.style.opacity = '1';
+      } else {
+        audio.pause();
+        playBtn.innerHTML = '';
+        playBtn.style.background = 'var(--warm)';
+        waveform.style.opacity = '0.4';
+      }
+    }
   </script>
 
 </body>
